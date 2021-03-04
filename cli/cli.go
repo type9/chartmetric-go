@@ -7,5 +7,5 @@ func cli() string {
 }
 
 func init() {
-	fmt.Println("chartmetric-go CLI v0.1")
+	fmt.Println("CLI interface for chartmetric-go")
 }
