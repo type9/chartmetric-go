@@ -4,27 +4,35 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 )
 
-type urlFormatter func([]string) string // Function that takes an array of paratmeters to formats it into a url string
+const timeoutDuration = 20 * time.Second
+
+type reqFormatter func(map[string]interface{}) *http.Request // function that takes an array of paratmeters to formats it into a url string
 
 //Call object takes an array of parameters and a function which formats it into a url
 type Call struct {
-	Param  []string
-	Format urlFormatter
+	Param  map[string]interface{}
+	Format reqFormatter
 }
 
 //MultiCall takes an 2d array of parameters and a function which formats it into a url
 type MultiCall struct {
-	Params [][]string
-	Format urlFormatter
+	Params []map[string]interface{}
+	Format reqFormatter
 }
 
 //CallOnce takes a single Call object and forms a full url and fetches the response
 func (call Call) CallOnce() *http.Response {
-	url := call.Format(call.Param)
+	timeout := time.Duration(timeoutDuration)
+	client := http.Client{
+		Timeout: timeout,
+	}
 
-	resp, err := http.Get(url)
+	req := call.Format(call.Param)
+
+	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -32,12 +40,17 @@ func (call Call) CallOnce() *http.Response {
 	return resp
 }
 
-//helper call function for multicall
+//async version of CallOnce that invokes a call method and utilizes a channel and a waitgroup
 func (call Call) asyncCall(ch chan<- *http.Response, wg *sync.WaitGroup) {
 	defer wg.Done()
-	url := call.Format(call.Param)
+	timeout := time.Duration(timeoutDuration)
+	client := http.Client{
+		Timeout: timeout,
+	}
 
-	resp, err := http.Get(url)
+	req := call.Format(call.Param)
+
+	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -54,7 +67,7 @@ func (mcall MultiCall) CallMulti(callback func(*http.Response)) {
 		wg.Add(1)
 
 		//capture parameters and run an async api call
-		go func(param []string) {
+		go func(param map[string]interface{}) {
 			call := Call{param, mcall.Format}
 			call.asyncCall(respChan, &wg)
 		}(param)

@@ -1,10 +1,12 @@
 package api
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"testing"
 )
 
 func printResults(resp *http.Response) {
@@ -18,24 +20,33 @@ func printResults(resp *http.Response) {
 	log.Println(string(body))
 }
 
-func pokeURL(param []string) string {
-	url := "https://pokeapi.co/api/v2/pokemon/" + param[0]
-	return url
-}
-
-func TestCallOnce(t *testing.T) {
-	param := []string{"ditto"}
-	call := Call{param, pokeURL}
-	printResults(call.CallOnce())
-}
-
-func TestCallMulti(t *testing.T) {
-	params := [][]string{
-		{"ditto"},
-		{"mew"},
-		{"charizard"},
-		{"pikachu"},
+func getPokemonByName(kwargs map[string]interface{}) *http.Request {
+	reqBody, err := json.Marshal(map[string]interface{}{})
+	url := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s", kwargs["name"])
+	req, err := http.NewRequest("GET", url, bytes.NewBuffer(reqBody))
+	req.Header.Set("Content-type", "application/json")
+	if err != nil {
+		log.Fatalln(err)
 	}
-	mcall := MultiCall{params, pokeURL}
-	mcall.CallMulti(printResults)
+	return req
 }
+
+// func TestCallOnce(t *testing.T) {
+// 	param := map[string]interface{}{
+// 		"name": "ditto",
+// 	}
+// 	call := Call{param, getPokemonByName}
+// 	printResults(call.CallOnce())
+// }
+
+// func TestCallMulti(t *testing.T) {
+// 	params := []map[string]interface{}{
+// 		{"name": "ditto"},
+// 		{"name": "charizard"},
+// 		{"name": "mew"},
+// 		{"name": "pikachu"},
+// 		{"name": "lapras"},
+// 	}
+// 	mcall := MultiCall{params, getPokemonByName}
+// 	mcall.CallMulti(printResults)
+// }
