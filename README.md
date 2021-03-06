@@ -12,17 +12,17 @@ See presentation slides on module implementation [GoogleSlides](https://docs.goo
 
 Allows for the creation of reusable API call objects. Automates concurrent API calls from a list of url parameters.
 
-- Installation
+### Installation
 
 ```bash
 go get github.com/type9/chartmetric-go/api
 ```
 
-- Usage
+### Usage
 
 In order to make a call object you need to specify two things, a request formatting function and parameters
 
-# Formatting function example (invokes parameters, returns *http.Request)
+#### Formatting function example (invokes parameters, returns *http.Request)
 ```golang
 func getPokemonByName(kwargs map[string]interface{}) *http.Request {
 	reqBody, err := json.Marshal(map[string]interface{}{})
@@ -39,7 +39,7 @@ func getPokemonByName(kwargs map[string]interface{}) *http.Request {
 }
 ```
 
-# Then, specify literal parameters and the formatting function into Call{} objects
+#### Then, specify literal parameters and the formatting function into Call{} objects
 ```golang
 func TestCallOnce() {
 	param := map[string]interface{}{
@@ -50,7 +50,7 @@ func TestCallOnce() {
 }
 ```
 
-# For a multiple API calls on a same url with varying parameters, use the MultiCall object
+#### For a multiple API calls on a same url with varying parameters, use the MultiCall object
 ```golang
 func TestCallMulti(callback) {
 	params := []map[string]interface{}{ // list of parameters
@@ -64,5 +64,3 @@ func TestCallMulti(callback) {
 	mcall.CallMulti(callback) // specifiy a callback function that accepts http.Repsonse objects to process the data as you wish
 }
 ```
-
-## Getting Started
