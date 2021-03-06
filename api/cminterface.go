@@ -13,7 +13,7 @@ type CMAuth struct {
 	Key string
 }
 
-func (auth CMAuth) formatReq(req *http.Request) { //TODO: Import refresh token using viper and gain valid refresh token
+func (auth CMAuth) formatHeader(req *http.Request) { //TODO: Import refresh token using viper and get valid access token from api
 	req.Header.Set("Authorization", "Bearer "+auth.Key)
 }
 
@@ -30,7 +30,7 @@ func (auth CMAuth) GetNeighborArtists(kwargs map[string]interface{}) *http.Reque
 	url := fmt.Sprintf("https://api.chartmetric.com/api/artist/%d/neighboring-artists?metric=%s&limit=%d", kwargs["id"], kwargs["metric"], kwargs["limit"])
 
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(reqBody))
-	auth.formatReq(req) //formats header
+	auth.formatHeader(req) //formats header
 	if err != nil {
 		log.Fatalln(err)
 	}
