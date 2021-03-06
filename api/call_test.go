@@ -64,12 +64,15 @@ func printResults(resp *http.Response) {
 //example formatter function for Pokemon API
 func getPokemonByName(kwargs map[string]interface{}) *http.Request {
 	reqBody, err := json.Marshal(map[string]interface{}{})
+
 	url := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s", kwargs["name"])
+
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(reqBody))
 	req.Header.Set("Content-type", "application/json")
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	return req
 }
 

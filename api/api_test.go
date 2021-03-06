@@ -11,7 +11,7 @@ func TestApi(t *testing.T) {
 
 //-- CHARTMETRIC INTERFACE TESTS --
 func TestGetNeighborArtists(t *testing.T) {
-	auth := CMAuth{"REPLACE_ME"}
+	auth := CMAuth{"REPLACE_ME"} //TODO: Rewrite such that acess token is retrieved using an imported refresh token
 	param := map[string]interface{}{
 		"id":     3388,
 		"metric": "cm_artist_rank",
