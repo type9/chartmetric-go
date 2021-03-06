@@ -1,4 +1,4 @@
-# 🔗 chartmetric-go
+# chartmetric-go
 An abstraction of Charmetric's API in Go with automated concurrency.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/type9/chartmetric-go)](https://goreportcard.com/report/github.com/type9/chartmetric-go)
