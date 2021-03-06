@@ -89,6 +89,7 @@ func respIterate(resp *http.Response) {
 	iter++
 }
 
+//Tests concurrent calls using MultiCall object
 func TestCallMulti(t *testing.T) {
 	params := []map[string]interface{}{
 		{"name": "ditto"},
@@ -102,7 +103,8 @@ func TestCallMulti(t *testing.T) {
 	iter = 0
 }
 
-func TestCallOnceIterated(t *testing.T) {
+//Tests a non-concurrent method of getting multiple calls worth of data
+func TestCallMultiIterated(t *testing.T) {
 	params := []map[string]interface{}{
 		{"name": "ditto"},
 		{"name": "charizard"},
